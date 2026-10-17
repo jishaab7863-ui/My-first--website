@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08090d">
+  <meta name="description" content="A little corner of the internet where fun never ends.">
+  <title>Welcome to My World</title>
+  <style>
+    /* Theme colors transition smoothly in browsers that support @property. */
+    @property --theme-hue {
+      syntax: "<number>";
+      inherits: true;
+      initial-value: 265;
+    }
+
+    :root {
+      color-scheme: dark;
+      --theme-hue: 265;
+      --ink: #f6f5ff;
+      --muted: #b6b2c6;
+      --panel: rgba(12, 13, 22, 0.82);
+      --line: rgba(255, 255, 255, 0.12);
+      --pink: #ff4f9a;
+      --cyan: #52efff;
+      --lime: #c4ff62;
+      --page-width: 1080px;
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 50% -15%, hsl(var(--theme-hue) 68% 19% / 0.76), transparent 57%),
+        radial-gradient(ellipse at 6% 88%, hsl(calc(var(--theme-hue) + 95) 72% 15% / 0.42), transparent 42%),
+        #08090d;
+      transition: --theme-hue 900ms ease, background-color 900ms ease;
+    }
+
+    body::before,
+    body::after {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+    }
+
+    body::before {
+      opacity: 0.34;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, #fff 50%, transparent 100%),
+        radial-gradient(1px 1px at 77% 31%, #fff 50%, transparent 100%),
+        radial-gradient(2px 2px at 42% 72%, #c8fbff 50%, transparent 100%),
+        radial-gradient(1px 1px at 88% 83%, #fff 50%, transparent 100%),
+        radial-gradient(1px 1px at 25% 91%, #fff 50%, transparent 100%),
+        radial-gradient(2px 2px at 66% 10%, #ffd5f0 50%, transparent 100%);
+      background-size: 340px 260px;
+      animation: star-drift 42s linear infinite;
+    }
+
+    body::after {
+      background: linear-gradient(180deg, transparent 45%, rgba(5, 6, 10, 0.4));
+    }
+
+    button {
+      font: inherit;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 3px solid #fff;
+      outline-offset: 4px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .shell {
+      width: min(var(--page-width), calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: 24px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .wordmark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .wordmark-mark {
+      display: grid;
+      width: 26px;
+      aspect-ratio: 1;
+      place-items: center;
+      border: 1px solid rgba(82, 239, 255, 0.6);
+      border-radius: 8px;
+      color: var(--cyan);
+      box-shadow: 0 0 18px rgba(82, 239, 255, 0.22);
+      transform: rotate(-8deg);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .status-dot {
+      width: 7px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 12px var(--lime);
+    }
+
+    main {
+      min-height: calc(100vh - 132px);
+      padding-block: 28px 72px;
+    }
+
+    .view {
+      animation: view-in 550ms cubic-bezier(0.2, 0.75, 0.25, 1) both;
+    }
+
+    .home {
+      display: flex;
+      min-height: min(700px, calc(100vh - 190px));
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-block: 42px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 22px;
+      color: var(--cyan);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: rise-in 650ms 80ms both;
+    }
+
+    .eyebrow::before,
+    .eyebrow::after {
+      width: 28px;
+      height: 1px;
+      background: currentColor;
+      content: "";
+      opacity: 0.6;
+    }
+
+    h1 {
+      max-width: 950px;
+      margin: 0;
+      font-size: clamp(3rem, 9vw, 7.25rem);
+      font-weight: 900;
+      letter-spacing: 0;
+      line-height: 0.94;
+      text-wrap: balance;
+      background: linear-gradient(105deg, #fff 4%, #a9faff 38%, #ffb1d8 72%, #fff 96%);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 28px rgba(82, 239, 255, 0.13));
+      animation: rise-in 750ms 150ms both;
+    }
+
+    .subtitle {
+      margin: 24px 0 0;
+      color: #d1cede;
+      font-size: clamp(1rem, 2.4vw, 1.2rem);
+      line-height: 1.7;
+      animation: rise-in 750ms 240ms both;
+    }
+
+    .orbit {
+      display: grid;
+      width: 54px;
+      aspect-ratio: 1;
+      place-items: center;
+      margin-top: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      color: #ffe97e;
+      background: rgba(255, 255, 255, 0.035);
+      box-shadow: 0 0 30px rgba(255, 233, 126, 0.1), inset 0 0 16px rgba(255, 255, 255, 0.04);
+      font-size: 1.35rem;
+      animation: float 4s ease-in-out infinite, rise-in 700ms 300ms both;
+    }
+
+    .button-row {
+      display: grid;
+      width: min(760px, 100%);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 42px;
+      animation: rise-in 750ms 350ms both;
+    }
+
+    .main-button {
+      position: relative;
+      display: flex;
+      min-height: 64px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      overflow: hidden;
+      padding: 14px 16px;
+      border: 1px solid var(--button-color);
+      border-radius: 14px;
+      color: #fff;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--button-color) 18%, #11121b), rgba(14, 14, 22, 0.94));
+      box-shadow: 0 0 24px color-mix(in srgb, var(--button-color) 16%, transparent), inset 0 0 18px rgba(255, 255, 255, 0.025);
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: transform 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
+    }
+
+    .main-button::after {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 28%, rgba(255, 255, 255, 0.14) 50%, transparent 72%);
+      content: "";
+      transform: translateX(-120%);
+      transition: transform 550ms ease;
+    }
+
+    .main-button:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 34px color-mix(in srgb, var(--button-color) 28%, transparent), inset 0 0 24px rgba(255, 255, 255, 0.04);
+    }
+
+    .main-button:hover::after {
+      transform: translateX(120%);
+    }
+
+    .main-button:active {
+      transform: translateY(-1px) scale(0.99);
+    }
+
+    .button-icon {
+      font-size: 1.2rem;
+    }
+
+    .button-theme {
+      --button-color: #ff64b1;
+    }
+
+    .button-quotes {
+      --button-color: #55edff;
+    }
+
+    .button-surprise {
+      --button-color: #c5ff5a;
+    }
+
+    .home-note {
+      margin: 23px 0 0;
+      color: #858196;
+      font-size: 0.8rem;
+      animation: rise-in 750ms 430ms both;
+    }
+
+    .page-heading {
+      margin: 0;
+      font-size: clamp(2.1rem, 6vw, 4rem);
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1.05;
+      text-wrap: balance;
+    }
+
+    .page-intro {
+      max-width: 640px;
+      margin: 13px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .section-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      margin: 30px 0 24px;
+    }
+
+    .quote-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(250px, 0.85fr);
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .quote-feature {
+      position: relative;
+      display: flex;
+      min-height: 245px;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: clamp(22px, 4vw, 36px);
+      border: 1px solid rgba(85, 237, 255, 0.36);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(22, 43, 54, 0.82), var(--panel) 72%);
+      box-shadow: 0 0 36px rgba(85, 237, 255, 0.08);
+    }
+
+    .quote-feature::after {
+      position: absolute;
+      right: -42px;
+      bottom: -76px;
+      width: 210px;
+      aspect-ratio: 1;
+      border: 1px solid rgba(85, 237, 255, 0.12);
+      border-radius: 50%;
+      box-shadow: 0 0 0 18px rgba(85, 237, 255, 0.025), 0 0 0 38px rgba(85, 237, 255, 0.02);
+      content: "";
+      pointer-events: none;
+    }
+
+    .quote-label,
+    .quote-count {
+      color: var(--cyan);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .featured-quote {
+      position: relative;
+      z-index: 1;
+      margin: 28px 0;
+      font-size: clamp(1.35rem, 3vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.4;
+      text-wrap: balance;
+    }
+
+    .quote-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .utility-button {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      font-weight: 700;
+      transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+    }
+
+    .utility-button:hover {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .utility-button.primary {
+      border-color: rgba(85, 237, 255, 0.58);
+      background: rgba(43, 198, 215, 0.15);
+      box-shadow: 0 0 18px rgba(85, 237, 255, 0.08);
+    }
+
+    .quote-side {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px;
+      border: 1px solid rgba(255, 79, 154, 0.27);
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(47, 23, 43, 0.62), var(--panel));
+    }
+
+    .quote-side h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .quote-side p {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    .quote-side .utility-button {
+      width: 100%;
+    }
+
+    .quote-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 13px;
+      margin-top: 20px;
+    }
+
+    .quote-card {
+      min-height: 132px;
+      padding: 19px;
+      border: 1px solid var(--card-color, rgba(255, 255, 255, 0.15));
+      border-radius: 13px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(10, 11, 17, 0.8));
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.16);
+      color: #e9e6f1;
+      font-size: 0.93rem;
+      line-height: 1.65;
+      animation: card-in 450ms both;
+      animation-delay: calc(var(--card-index, 0) * 35ms);
+    }
+
+    .quote-grid[hidden] {
+      display: none;
+    }
+
+    .back-row {
+      display: flex;
+      justify-content: flex-start;
+      margin-top: 30px;
+    }
+
+    .surprise-stage {
+      position: relative;
+      display: grid;
+      min-height: 390px;
+      overflow: hidden;
+      place-items: center;
+      margin-top: 28px;
+      padding: 40px 24px;
+      border: 1px solid rgba(196, 255, 98, 0.35);
+      border-radius: 20px;
+      background:
+        radial-gradient(ellipse at 50% 55%, rgba(130, 255, 155, 0.12), transparent 48%),
+        linear-gradient(145deg, rgba(31, 44, 30, 0.82), var(--panel) 70%);
+      box-shadow: 0 0 42px rgba(196, 255, 98, 0.07);
+      text-align: center;
+    }
+
+    .surprise-copy {
+      position: relative;
+      z-index: 2;
+      max-width: 650px;
+    }
+
+    .surprise-emoji {
+      display: block;
+      min-height: 84px;
+      font-size: clamp(3.5rem, 9vw, 5.5rem);
+      filter: drop-shadow(0 0 22px rgba(196, 255, 98, 0.26));
+      animation: bob 2.8s ease-in-out infinite;
+    }
+
+    .surprise-message {
+      margin: 18px 0 25px;
+      font-size: clamp(1.5rem, 4.5vw, 2.65rem);
+      font-weight: 800;
+      line-height: 1.25;
+      text-wrap: balance;
+    }
+
+    .surprise-button {
+      min-width: 180px;
+      border-color: rgba(196, 255, 98, 0.56);
+      background: rgba(150, 220, 67, 0.14);
+    }
+
+    .surprise-burst {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .burst-emoji {
+      position: absolute;
+      bottom: -45px;
+      left: var(--x);
+      font-size: var(--size);
+      opacity: 0;
+      animation: burst-up var(--duration) ease-out var(--delay) both;
+    }
+
+    footer {
+      padding: 18px 20px 28px;
+      color: #918da1;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    footer span {
+      color: #ff77a9;
+    }
+
+    @keyframes star-drift {
+      to { background-position: 0 260px; }
+    }
+
+    @keyframes rise-in {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes view-in {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(12px) scale(0.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes float {
+      50% { transform: translateY(-5px) rotate(7deg); }
+    }
+
+    @keyframes bob {
+      50% { transform: translateY(-8px) rotate(4deg); }
+    }
+
+    @keyframes burst-up {
+      0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.65); }
+      15% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-390px) rotate(26deg) scale(1.1); }
+    }
+
+    @media (max-width: 760px) {
+      .button-row {
+        grid-template-columns: 1fr;
+        width: min(420px, 100%);
+        gap: 11px;
+        margin-top: 32px;
+      }
+
+      .main-button {
+        min-height: 58px;
+      }
+
+      .quote-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .quote-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section-top {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .quote-count {
+        margin-top: 3px;
+      }
+
+      .home {
+        min-height: auto;
+        padding-block: 72px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .shell {
+        width: min(100% - 28px, var(--page-width));
+      }
+
+      .topbar {
+        padding-block: 18px;
+        font-size: 0.66rem;
+      }
+
+      .status {
+        gap: 6px;
+      }
+
+      main {
+        padding-top: 12px;
+      }
+
+      .eyebrow {
+        font-size: 0.65rem;
+      }
+
+      .quote-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .quote-card {
+        min-height: 0;
+      }
+
+      .quote-feature {
+        min-height: 265px;
+      }
+
+      .quote-controls {
+        flex-direction: column;
+      }
+
+      .quote-controls .utility-button {
+        width: 100%;
+      }
+
+      .surprise-stage {
+        min-height: 360px;
+        padding-inline: 18px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar shell">
+    <div class="wordmark"><span class="wordmark-mark" aria-hidden="true">✦</span> Personal playground</div>
+    <div class="status"><span class="status-dot" aria-hidden="true"></span> The fun is online</div>
+  </header>
+
+  <main class="shell">
+    <!-- Home view: the three main ways into the playground. -->
+    <section class="view home" id="homeView" aria-labelledby="homeTitle">
+      <p class="eyebrow">Your little corner of the internet</p>
+      <h1 id="homeTitle">WELCOME TO<br>MY WORLD</h1>
+      <p class="subtitle">A Little Corner of the Internet Where Fun Never Ends.</p>
+      <div class="orbit" aria-hidden="true">✦</div>
+
+      <div class="button-row" aria-label="Explore the playground">
+        <button class="main-button button-theme" id="themeButton" type="button">
+          <span class="button-icon" aria-hidden="true">🎨</span> Change My World
+        </button>
+        <button class="main-button button-quotes" id="quotesButton" type="button">
+          <span class="button-icon" aria-hidden="true">😂</span> Funny Quotes Zone
+        </button>
+        <button class="main-button button-surprise" id="surpriseButton" type="button">
+          <span class="button-icon" aria-hidden="true">✨</span> Surprise Me!
+        </button>
+      </div>
+      <p class="home-note" id="themeStatus" aria-live="polite">A fresh little universe, whenever you want one.</p>
+    </section>
+
+    <!-- Quotes view: a featured quote and a browsable collection. -->
+    <section class="view" id="quotesView" aria-labelledby="quotesTitle" hidden>
+      <div class="section-top">
+        <div>
+          <p class="eyebrow">A highly unscientific mood booster</p>
+          <h1 class="page-heading" id="quotesTitle">Funny Quotes Zone</h1>
+          <p class="page-intro">School, sleep, snacks, and the serious business of avoiding homework. Sab cover hai.</p>
+        </div>
+        <span class="quote-count" id="quoteCount"></span>
+      </div>
+
+      <div class="quote-layout">
+        <article class="quote-feature" aria-live="polite">
+          <span class="quote-label">Today's extremely relatable thought</span>
+          <p class="featured-quote" id="featuredQuote"></p>
+          <div class="quote-controls">
+            <button class="utility-button primary" id="nextQuoteButton" type="button">↻ Next Funny Quote</button>
+            <button class="utility-button" id="showAllButton" type="button" aria-expanded="false" aria-controls="quoteGrid">▦ Show All Quotes</button>
+          </div>
+        </article>
+
+        <aside class="quote-side">
+          <div>
+            <h2>Bas ek aur quote.</h2>
+            <p>Phir pakka kaam karenge. Maybe. Is collection mein school-life drama se leke everyday overthinking tak sab kuch hai.</p>
+          </div>
+          <button class="utility-button" type="button" data-home>← Back to Home</button>
+        </aside>
+      </div>
+
+      <div class="quote-grid" id="quoteGrid" hidden aria-label="All funny quotes"></div>
+      <div class="back-row">
+        <button class="utility-button" type="button" data-home>← Back to Home</button>
+      </div>
+    </section>
+
+    <!-- Surprise view: each activation gets a new message and a fresh burst. -->
+    <section class="view" id="surpriseView" aria-labelledby="surpriseTitle" hidden>
+      <p class="eyebrow">Incoming joy delivery</p>
+      <h1 class="page-heading" id="surpriseTitle">A Little Surprise</h1>
+      <p class="page-intro">The universe had a tiny idea. It wanted you to have it.</p>
+
+      <div class="surprise-stage">
+        <div class="surprise-burst" id="surpriseBurst" aria-hidden="true"></div>
+        <div class="surprise-copy" aria-live="polite">
+          <span class="surprise-emoji" id="surpriseEmoji" aria-hidden="true">🎉</span>
+          <p class="surprise-message" id="surpriseMessage"></p>
+          <button class="utility-button surprise-button" id="surpriseAgainButton" type="button">✨ Surprise Again</button>
+        </div>
+      </div>
+
+      <div class="back-row">
+        <button class="utility-button" type="button" data-home>← Back to Home</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>Made with <span aria-label="love">♥</span>, curiosity, and a little bit of madness.</footer>
+
+  <script>
+    // Original Hinglish one-liners for the quote collection.
+    const quotes = [
+      "Padhne baitha tha, phir yaad aaya ki phone bhi padhai ka distraction hai.",
+      "Mera confidence Wi-Fi jaisa hai, zaroorat ke time gayab.",
+      "Exam mein questions mujhe dekh rahe the, aur main questions ko.",
+      "Homework itna pending hai ki ab usko historical monument declare kar dena chahiye.",
+      "School ka sabse difficult subject? Monday morning.",
+      "Teacher ne bola, 'Surprise test!' Mera dimaag bola, 'Surprise, kuch nahi padha.'",
+      "Group project mein mera role tha: 'Guys, presentation mast lag rahi hai.'",
+      "Attendance short hai, par excuses ki presence full hai.",
+      "Mummy: padhai kar lo. Main: haan. Mera phone: ek video aur dekh le.",
+      "Alarm subah bajta hai, main usse personally ignore karta hoon.",
+      "Neend meri best friend hai, bas school usko humse alag kar deta hai.",
+      "Main lazy nahi hoon, bas energy-saving mode mein hoon.",
+      "Overthinking ka subscription liya nahi, phir bhi lifetime access mila hai.",
+      "Fridge khola, kuch nahi mila. Do minute baad phir check kiya, just in case.",
+      "Phone 2% pe ho toh charger dhoondhta hoon. Main 2% pe hoon toh coffee.",
+      "Ek chapter padhte hi lagta hai, ab toh topper banna pakka hai.",
+      "Mere notes itne neat hain ki padhai bas unko dekh ke hi ho jaati hai.",
+      "Exam hall mein dimaag airplane mode pe chala jaata hai.",
+      "Dost bolta hai 'five minutes mein aa raha hoon' matlab abhi naha raha hai.",
+      "Mera room clean hai. Bas floor pe jo hai usko permanent decoration samjho.",
+      "Jab teacher bolte hain 'pair up', meri nazar seedha best friend ko scan karti hai.",
+      "Diet kal se start hai. Aaj ka samosa farewell party hai.",
+      "Main multitasking kar sakta hoon: padhai avoid aur phone scroll, ek saath.",
+      "Battery low, storage full, aur patience toh pehle se hi khatam.",
+      "Mummy ka 'bas ek kaam kar do' kabhi bas ek kaam nahi hota.",
+      "Test ke baad sabka answer alag ho, toh confidence group mein toot jaata hai.",
+      "Maine socha jaldi so jaunga. Phir 2 baje tak future ke baare mein socha.",
+      "School bag mein books kam, mystery objects zyada milte hain.",
+      "Mera brain: focus karo. Main: bilkul. Also main: khidki ke bahar kya ho raha hai?",
+      "Online class mein camera off tha, par meri attention bhi off thi.",
+      "Jab koi bolta hai 'easy question hai', tabhi question tough ho jaata hai.",
+      "Sunday shaam ko Monday ki yaad aana ek emotional plot twist hai.",
+      "Padhai ka plan banane mein itni mehnat ki, ab thak ke break le raha hoon.",
+      "Dost ka 'ek secret batana' sunte hi poori class ko news mil jaati hai.",
+      "Meri handwriting doctor jaisi hai, bas doctor ko bhi samajh na aaye.",
+      "Jeb mein paise aaye nahi ki snacks ne unhe adopt kar liya."
+    ];
+
+    const themes = [
+      { name: "Neon lagoon", hue: 190 },
+      { name: "Electric orchid", hue: 275 },
+      { name: "Solar flare", hue: 24 },
+      { name: "Cyber meadow", hue: 128 },
+      { name: "Laser rose", hue: 330 },
+      { name: "Midnight blue", hue: 220 },
+      { name: "Cosmic gold", hue: 48 },
+      { name: "Arctic glow", hue: 174 },
+      { name: "Cherry nebula", hue: 350 },
+      { name: "Pixel jungle", hue: 100 }
+    ];
+
+    const surprises = [
+      { emoji: "🛸", message: "Official notice: you are cleared for one guilt-free snack break." },
+      { emoji: "🦄", message: "A tiny unicorn just reviewed your vibes. Five stars. No notes." },
+      { emoji: "🍕", message: "Breaking news: pizza has once again solved a problem that was not even pizza-related." },
+      { emoji: "🕺", message: "Your next task is to do one tiny dance. The committee insists." },
+      { emoji: "🐸", message: "A very important frog says: take a breath. You are doing frog-tastic." },
+      { emoji: "🚀", message: "Your motivation has been spotted. It was hiding behind the snacks." },
+      { emoji: "🪩", message: "Congratulations! You have unlocked absolutely no new skills, but excellent sparkle." },
+      { emoji: "🌈", message: "Today’s forecast: 80% chance of making it up as you go. Looking good." },
+      { emoji: "🐣", message: "A tiny reminder from the universe: even your loading screen is progress." },
+      { emoji: "🎮", message: "Achievement unlocked: you made it to this exact moment. +100 cozy points." },
+      { emoji: "🧃", message: "Hydration check! Your future self just sent a very polite thank-you." },
+      { emoji: "🦖", message: "Dino-sized reminder: you are allowed to be a work in progress." }
+    ];
+
+    const homeView = document.getElementById("homeView");
+    const quotesView = document.getElementById("quotesView");
+    const surpriseView = document.getElementById("surpriseView");
+    const featuredQuote = document.getElementById("featuredQuote");
+    const quoteGrid = document.getElementById("quoteGrid");
+    const showAllButton = document.getElementById("showAllButton");
+    const themeStatus = document.getElementById("themeStatus");
+    let previousQuote = -1;
+    let previousSurprise = -1;
+    let previousTheme = -1;
+    let allQuotesVisible = false;
+
+    function showView(view) {
+      [homeView, quotesView, surpriseView].forEach((section) => {
+        section.hidden = section !== view;
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function chooseDifferentIndex(length, previous) {
+      if (length < 2) return 0;
+      let index = Math.floor(Math.random() * length);
+      while (index === previous) {
+        index = Math.floor(Math.random() * length);
+      }
+      return index;
+    }
+
+    function showRandomQuote() {
+      previousQuote = chooseDifferentIndex(quotes.length, previousQuote);
+      featuredQuote.textContent = `“${quotes[previousQuote]}”`;
+    }
+
+    function renderAllQuotes() {
+      const palette = ["#ff6fae", "#55edff", "#c4ff62", "#b992ff", "#ffbd69"];
+      quoteGrid.replaceChildren();
+      quotes.forEach((quote, index) => {
+        const card = document.createElement("article");
+        card.className = "quote-card";
+        card.style.setProperty("--card-index", index);
+        card.style.setProperty("--card-color", `${palette[index % palette.length]}66`);
+        card.textContent = `“${quote}”`;
+        quoteGrid.append(card);
+      });
+    }
+
+    function updateSurprise() {
+      previousSurprise = chooseDifferentIndex(surprises.length, previousSurprise);
+      const surprise = surprises[previousSurprise];
+      document.getElementById("surpriseEmoji").textContent = surprise.emoji;
+      document.getElementById("surpriseMessage").textContent = surprise.message;
+
+      const burst = document.getElementById("surpriseBurst");
+      burst.replaceChildren();
+      const confetti = ["✨", "⭐", "💫", "🎈", "🌟", "💖", "🎉"];
+      for (let index = 0; index < 13; index += 1) {
+        const particle = document.createElement("span");
+        particle.className = "burst-emoji";
+        particle.textContent = confetti[Math.floor(Math.random() * confetti.length)];
+        particle.style.setProperty("--x", `${5 + Math.random() * 90}%`);
+        particle.style.setProperty("--size", `${16 + Math.random() * 20}px`);
+        particle.style.setProperty("--delay", `${Math.random() * 700}ms`);
+        particle.style.setProperty("--duration", `${1800 + Math.random() * 900}ms`);
+        burst.append(particle);
+      }
+    }
+
+    document.getElementById("themeButton").addEventListener("click", () => {
+      previousTheme = chooseDifferentIndex(themes.length, previousTheme);
+      const theme = themes[previousTheme];
+      document.documentElement.style.setProperty("--theme-hue", theme.hue);
+      themeStatus.textContent = `Current universe: ${theme.name}. Pick again to hop somewhere new.`;
+    });
+
+    document.getElementById("quotesButton").addEventListener("click", () => {
+      showRandomQuote();
+      showView(quotesView);
+    });
+
+    document.getElementById("surpriseButton").addEventListener("click", () => {
+      updateSurprise();
+      showView(surpriseView);
+    });
+
+    document.getElementById("nextQuoteButton").addEventListener("click", showRandomQuote);
+
+    showAllButton.addEventListener("click", () => {
+      allQuotesVisible = !allQuotesVisible;
+      if (allQuotesVisible && quoteGrid.childElementCount === 0) {
+        renderAllQuotes();
+      }
+      quoteGrid.hidden = !allQuotesVisible;
+      showAllButton.setAttribute("aria-expanded", String(allQuotesVisible));
+      showAllButton.textContent = allQuotesVisible ? "▤ Show Fewer Quotes" : "▦ Show All Quotes";
+    });
+
+    document.getElementById("surpriseAgainButton").addEventListener("click", updateSurprise);
+
+    document.querySelectorAll("[data-home]").forEach((button) => {
+      button.addEventListener("click", () => showView(homeView));
+    });
+
+    document.getElementById("quoteCount").textContent = `${quotes.length} original quotes`;
+  </script>
+</body>
+</html>
